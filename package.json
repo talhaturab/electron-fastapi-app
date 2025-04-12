@@ -1,0 +1,12 @@
+{
+    "name": "electron-fastapi-app",
+    "version": "1.0.0",
+    "main": "frontend/main.js",
+    "scripts": {
+      "start": "electron ."
+    },
+    "dependencies": {
+      "electron": "^28.1.0"
+    }
+  }
+  

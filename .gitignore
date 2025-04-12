@@ -1,0 +1,18 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+tenv/
+# PyInstaller
+dist/
+build/
+*.spec
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

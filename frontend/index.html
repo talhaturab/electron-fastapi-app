@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Electron NLP Assistant</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 500px;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2d3748;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #3182ce;
+    }
+
+    button {
+      background-color: #3182ce;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:disabled {
+      background-color: #a0aec0;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #2563eb;
+    }
+
+    pre {
+      background-color: #f7fafc;
+      color: #2d3748;
+      padding: 16px;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: left;
+      overflow-x: auto;
+      max-height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🧠 Ask Something Smart</h2>
+    <input id="queryInput" type="text" placeholder="Type your query here..." disabled />
+    <button id="queryButton" onclick="sendQuery()" disabled>Send</button>
+    <pre id="result">Waiting for backend...</pre>
+  </div>
+
+  <script>
+    async function waitForBackend() {
+      let ready = false;
+      while (!ready) {
+        try {
+          const res = await fetch('http://localhost:8000/docs');
+          if (res.ok) ready = true;
+        } catch (e) {
+          console.log("Waiting for FastAPI backend...");
+        }
+        await new Promise(r => setTimeout(r, 500)); // wait 0.5s
+      }
+
+      document.getElementById('queryInput').disabled = false;
+      document.getElementById('queryButton').disabled = false;
+      document.getElementById('result').innerText = '✅ Backend is ready! Ask something.';
+    }
+
+    waitForBackend(); // start polling
+
+    async function sendQuery() {
+      const query = document.getElementById('queryInput').value;
+      const response = await fetch('http://localhost:8000/nlp/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+      const data = await response.json();
+      document.getElementById('result').innerText = data.response;
+    }
+  </script>
+</body>
+</html>
