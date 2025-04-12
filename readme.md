@@ -32,7 +32,6 @@ npm install
 ### 3. Set up backend (FastAPI + Python)
 
 ```bash
-cd backend
 python -m venv env
 source env/bin/activate   # Windows: env\Scripts\activate
 pip install -r requirements.txt
